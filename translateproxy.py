@@ -64,7 +64,7 @@ def translate_en_jw(tweet):
             return translation
         except Exception as e:
             working_proxies.remove(proxy)
-            with open('./working_proxy.txt', 'w') as f:
+            with open(working_proxy_file, 'w') as f:
                 for item in working_proxies:
                     f.write("%s" % item)
             print(f"Removed non-working proxy: {proxy.strip()}")
