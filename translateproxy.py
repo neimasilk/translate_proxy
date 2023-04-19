@@ -3,10 +3,6 @@
 from googletrans import Translator
 import concurrent.futures
 import re
-import pickle
-import random
-from datasets import load_dataset
-from tqdm import tqdm
 
 def extract_proxy(address):
     return f'http://{address.split()[-1].replace(">", "")}'
