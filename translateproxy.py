@@ -71,35 +71,6 @@ def translate_en_jw(tweet):
     return "No working proxies found."
 
 
-# def translate_en_jw_worker(tweet, proxy):
-#     try:
-#         proks = extract_proxy(proxy)
-#         prox_dict = {"http": proks}
-#         translation = translate_tweet_to_javanese_proxy(tweet, prox_dict)
-#         return translation
-#     except Exception as e:
-#         print(f"Error with proxy {proxy.strip()}: {str(e)}")
-#         return None
-
-# def translate_en_jw(tweet, max_workers=5):
-#     with open('./working_proxy.txt', 'r') as f:
-#         working_proxies = [line for line in f.readlines()]
-
-#     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-#         translations = list(executor.map(translate_en_jw_worker, [tweet]*len(working_proxies), working_proxies))
-
-#     for translation, proxy in zip(translations, working_proxies):
-#         if translation:
-#             return translation
-#         else:
-#             working_proxies.remove(proxy)
-#             with open('./working_proxy.txt', 'w') as f:
-#                 for item in working_proxies:
-#                     f.write("%s" % item)
-#             print(f"Removed non-working proxy: {proxy.strip()}")
-
-#     return "No working proxies found."
-
 def main():
     tweet = "This is a test tweet"
     translated_tweet = translate_en_jw(tweet)
