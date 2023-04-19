@@ -20,7 +20,7 @@ def translate_tweet_to_javanese_proxy(tweet, proxy):
 
 def find_translate_proxy(proxy_file=None):
     if proxy_file is None:
-        proxy_file = os.path.join(current_directory, 'working_proxy.txt')
+        proxy_file = os.path.join(current_directory, 'good_proxy_list.txt')
 
     with open(proxy_file, "r") as f:
         proxy_list = [line for line in f.readlines()]
@@ -72,6 +72,7 @@ def translate_en_jw(tweet):
 
 
 def main():
+    # save_working_proxy()
     tweet = "This is a test tweet"
     translated_tweet = translate_en_jw(tweet)
     print(f"Original tweet: {tweet}")
