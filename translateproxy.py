@@ -1,8 +1,10 @@
 # translate proxy  from list
-
+import os
 from googletrans import Translator
 import concurrent.futures
 import re
+
+current_directory = os.path.dirname(os.path.abspath(__file__))
 
 def extract_proxy(address):
     return f'http://{address.split()[-1].replace(">", "")}'
@@ -16,8 +18,10 @@ def translate_tweet_to_javanese_proxy(tweet, proxy):
     my_translation = translator.translate(tweet, src='en', dest='jw')
     return my_translation.text
 
+def find_translate_proxy(proxy_file=None):
+    if proxy_file is None:
+        proxy_file = os.path.join(current_directory, 'working_proxy.txt')
 
-def find_translate_proxy(proxy_file='./working_proxy.txt'):
     with open(proxy_file, "r") as f:
         proxy_list = [line for line in f.readlines()]
 
@@ -37,16 +41,19 @@ def find_translate_proxy(proxy_file='./working_proxy.txt'):
 
     return working_proxy
 
+def save_working_proxy(working_proxy_file=None):
+    if working_proxy_file is None:
+        working_proxy_file = os.path.join(current_directory, 'working_proxy.txt')
 
-def save_working_proxy():
     list_working_proxy = find_translate_proxy()
-    with open('./working_proxy.txt', 'w') as f:
+    with open(working_proxy_file, 'w') as f:
         for item in list_working_proxy:
             f.write("%s" % item)
 
 
 def translate_en_jw(tweet):
-    with open('./working_proxy.txt', 'r') as f:
+    working_proxy_file = os.path.join(current_directory, 'working_proxy.txt')
+    with open(working_proxy_file, 'r') as f:
         working_proxies = [line for line in f.readlines()]
 
     for proxy in working_proxies:
@@ -64,34 +71,34 @@ def translate_en_jw(tweet):
     return "No working proxies found."
 
 
-def translate_en_jw_worker(tweet, proxy):
-    try:
-        proks = extract_proxy(proxy)
-        prox_dict = {"http": proks}
-        translation = translate_tweet_to_javanese_proxy(tweet, prox_dict)
-        return translation
-    except Exception as e:
-        print(f"Error with proxy {proxy.strip()}: {str(e)}")
-        return None
+# def translate_en_jw_worker(tweet, proxy):
+#     try:
+#         proks = extract_proxy(proxy)
+#         prox_dict = {"http": proks}
+#         translation = translate_tweet_to_javanese_proxy(tweet, prox_dict)
+#         return translation
+#     except Exception as e:
+#         print(f"Error with proxy {proxy.strip()}: {str(e)}")
+#         return None
 
-def translate_en_jw(tweet, max_workers=5):
-    with open('./working_proxy.txt', 'r') as f:
-        working_proxies = [line for line in f.readlines()]
+# def translate_en_jw(tweet, max_workers=5):
+#     with open('./working_proxy.txt', 'r') as f:
+#         working_proxies = [line for line in f.readlines()]
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        translations = list(executor.map(translate_en_jw_worker, [tweet]*len(working_proxies), working_proxies))
+#     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+#         translations = list(executor.map(translate_en_jw_worker, [tweet]*len(working_proxies), working_proxies))
 
-    for translation, proxy in zip(translations, working_proxies):
-        if translation:
-            return translation
-        else:
-            working_proxies.remove(proxy)
-            with open('./working_proxy.txt', 'w') as f:
-                for item in working_proxies:
-                    f.write("%s" % item)
-            print(f"Removed non-working proxy: {proxy.strip()}")
+#     for translation, proxy in zip(translations, working_proxies):
+#         if translation:
+#             return translation
+#         else:
+#             working_proxies.remove(proxy)
+#             with open('./working_proxy.txt', 'w') as f:
+#                 for item in working_proxies:
+#                     f.write("%s" % item)
+#             print(f"Removed non-working proxy: {proxy.strip()}")
 
-    return "No working proxies found."
+#     return "No working proxies found."
 
 def main():
     tweet = "This is a test tweet"
